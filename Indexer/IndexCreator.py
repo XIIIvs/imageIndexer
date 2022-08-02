@@ -1,17 +1,11 @@
-from .Initializer import IMG_INDEX_DICT, K_INDEX_PATH, K_PATHS, K_ZIP_FILE_FLAG, K_IMAGE_FILES, IMG_INDEX_DIR, \
-    replace_windows_characters
+from .Initializer import IMG_INDEX_DICT, replace_windows_characters
+from .Settings import *
 from .Color import rgb_to_hex_color
 from os.path import join, exists
 from os import makedirs
 import zipfile
 import cv2 as opencv
 import numpy
-
-MAX_SHOW_IMAGE_SIZE = 1000
-
-INDEX_SIZE = 32
-PROCESSING_FORMAT_PATTERN = "\r        PROCESSING [{0:>3}%] {1:>6} / {2}"
-END_PROCESSING_FORMAT_PATTERN = "\r        DONE       [100%] {0:>6} / {0}"
 
 
 def create_indexes(

@@ -1,35 +1,9 @@
+from .Settings import *
 import os
 import copy
 import zipfile
 from os.path import join, isfile, isdir
 
-IMG_INDEX_EXTENSION = "IMG_INDEX"
-IMG_INDEX = f".{IMG_INDEX_EXTENSION}"
-IMG_INDEX_DIR = f".{IMG_INDEX_EXTENSION}_DIR"
-
-K_PATHS = "paths"
-K_IMAGE_FILES = "image_files"
-K_NAME = "name"
-K_ZIP_FILE_FLAG = "zip_file_flag"
-K_INDEX_PATH = "index_path"
-
-PROPER_IMAGE_FILE_EXTENSIONS = (
-    "png",
-    "jpg",
-    "jpeg",
-    "bmp"
-)
-
-EMPTY_IMG_INDEX_DICT = {
-    K_PATHS: dict(),
-    K_INDEX_PATH: str()
-}
-
-EMPTY_PATH_DICT = {
-    K_NAME: str(),
-    K_ZIP_FILE_FLAG: bool(),
-    K_IMAGE_FILES: dict()
-}
 
 IMG_INDEX_DICT = dict()
 PATHS = dict()
