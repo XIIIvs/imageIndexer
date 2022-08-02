@@ -30,5 +30,6 @@ if __name__ == '__main__':
         type=str
     )
     parsed_args = arg_parser.parse_args()
-    print(parsed_args)
-    initialize_indexer(parsed_args.directory, parsed_args.non_recursive)
+    # print(parsed_args)
+    initialize_indexer(parsed_args.directory, parsed_args.non_recursive, parsed_args.index_directory)
+    pretty_print()

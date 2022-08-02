@@ -7,6 +7,7 @@ K_PATHS = "paths"
 K_IMAGE_FILES = "image_files"
 K_NAME = "name"
 K_ZIP_FILE_FLAG = "zip_file_flag"
+K_INDEX_PATH = "index_path"
 
 PROPER_IMAGE_FILE_EXTENSIONS = (
     "png",
@@ -16,7 +17,8 @@ PROPER_IMAGE_FILE_EXTENSIONS = (
 )
 
 EMPTY_IMG_INDEX_DICT = {
-    K_PATHS: dict()
+    K_PATHS: dict(),
+    K_INDEX_PATH: str()
 }
 
 EMPTY_PATH_DICT = {
@@ -29,15 +31,16 @@ IMG_INDEX_DICT = dict()
 PATHS = dict()
 
 
-def initialize_indexer(arg_directory: list, non_recursive_directory_search: bool):
+def initialize_indexer(arg_directory:list, non_recursive_directory_search:bool, fixed_index_path:str=None):
     print("INFO Initialize indexer")
     for directory in arg_directory:
         path_to_img_index_file = join(directory, "IMGINDEX")
         IMG_INDEX_DICT[path_to_img_index_file] = copy.deepcopy(EMPTY_IMG_INDEX_DICT)
+        IMG_INDEX_DICT[path_to_img_index_file][K_INDEX_PATH] = path_to_img_index_file if fixed_index_path is None else join(fixed_index_path, f"{replace_windows_characters(directory)}_IMGINDEX")
         process_directory(directory, path_to_img_index_file, non_recursive_directory_search)
 
 
-def process_zip(zip_filename, zip_file_path, path_to_img_index_file):
+def process_zip(zip_filename:str, zip_file_path:str, path_to_img_index_file:str):
     add_zip_dir_flag = False
     with zipfile.ZipFile(zip_file_path, mode="r") as archive:
         proper_files_list = list()
@@ -52,7 +55,7 @@ def process_zip(zip_filename, zip_file_path, path_to_img_index_file):
     return add_zip_dir_flag
 
 
-def process_directory(directory: str, path_to_img_index_file: str, non_recursive_directory_search: bool):
+def process_directory(directory:str, path_to_img_index_file:str, non_recursive_directory_search:bool):
     print(f"     process directory [{directory}]")
     add_files_flag = False
     file_and_dirs_with_path_list = list(map(lambda listdir_name:
@@ -96,7 +99,7 @@ def process_directory(directory: str, path_to_img_index_file: str, non_recursive
     return add_files_flag
 
 
-def add_directory_to_img_index(path_to_img_index_file, directory_key, directory_name, zip_flag=False):
+def add_directory_to_img_index(path_to_img_index_file:str, directory_key:str, directory_name:str, zip_flag:bool=False):
     if directory_key in PATHS:
         print_warn(f"Given path [{directory_key}] already exists in other img index - check -> {PATHS[directory_key]} vs {path_to_img_index_file}")
     IMG_INDEX_DICT[path_to_img_index_file][K_PATHS][directory_key] = copy.deepcopy(EMPTY_PATH_DICT)
@@ -105,15 +108,31 @@ def add_directory_to_img_index(path_to_img_index_file, directory_key, directory_
     PATHS[directory_key] = path_to_img_index_file
 
 
-def print_warn(msg):
+def print_warn(msg:str):
     print(f"\n----\nWARN {msg}\n----\n")
+
+
+def replace_windows_characters(string: str):
+    return string\
+        .replace(" ", "-")\
+        .replace("\\", "-")\
+        .replace("/", "-")\
+        .replace(":", "")\
+        .replace("*", "")\
+        .replace("?", "")\
+        .replace('"', "")\
+        .replace("'", "")\
+        .replace("<", "")\
+        .replace(">", "")\
+        .replace("|", "")
 
 
 def pretty_print():
     print("Summary for IMG INDEX DICT")
     for img_index_path in IMG_INDEX_DICT:
-        print(f" - index [{img_index_path}]")
+        print(f" - index [{img_index_path}] -> {IMG_INDEX_DICT[img_index_path][K_INDEX_PATH]}")
         for path in IMG_INDEX_DICT[img_index_path][K_PATHS]:
-            name = IMG_INDEX_DICT[img_index_path][K_PATHS][path]
-            files = IMG_INDEX_DICT[img_index_path][K_PATHS][path]
-            is_zip = IMG_INDEX_DICT[img_index_path][K_PATHS][path]
+            name = IMG_INDEX_DICT[img_index_path][K_PATHS][path][K_NAME]
+            files = IMG_INDEX_DICT[img_index_path][K_PATHS][path][K_IMAGE_FILES]
+            is_zip = IMG_INDEX_DICT[img_index_path][K_PATHS][path][K_ZIP_FILE_FLAG]
+            print(f" --- path {'ZIP' if is_zip else '   '} [{path}] - '{name}' - with {len(files)} image files")
