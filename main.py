@@ -12,6 +12,16 @@ if __name__ == '__main__':
         action="store_true"
     )
     arg_parser.add_argument(
+        '-s', '--show_images',
+        help="Show images when process",
+        action="store_true"
+    )
+    arg_parser.add_argument(
+        '-w', '--write_indexes',
+        help="Write generated indexes in index directory",
+        action="store_true"
+    )
+    arg_parser.add_argument(
         '-d', '--directory',
         help="Specify given directory (default os.getcwd)",
         default=[os.getcwd()],
@@ -32,4 +42,6 @@ if __name__ == '__main__':
     parsed_args = arg_parser.parse_args()
     # print(parsed_args)
     initialize_indexer(parsed_args.directory, parsed_args.non_recursive, parsed_args.index_directory)
+    if parsed_args.create_index:
+        create_indexes(parsed_args.show_images, parsed_args.write_indexes)
     pretty_print()

@@ -47,6 +47,7 @@ def proces_rgb_to_unify_color_map_rgb(row, col, red, green, blue):
 if __name__ == '__main__':
     filename_filepath_tuple_list = list(map(lambda listdir_name: (listdir_name, join(IMAGE_PATH, listdir_name)), os.listdir(IMAGE_PATH)))
     filename_filepath_tuple_list = list(filter(lambda t: isfile(t[1]), filename_filepath_tuple_list))
+    filename_filepath_tuple_list = list(filter(lambda t: t[1].split('.')[-1] != 'zip', filename_filepath_tuple_list))
     size = 32
     print(f"Size [{size}] -> dimension {size * size} pixels -> {size * size * 6} hex character")
     for filename, filepath in sorted(filename_filepath_tuple_list, key=lambda x: os.path.getmtime(x[1])):
