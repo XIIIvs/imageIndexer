@@ -1,12 +1,8 @@
-from .Settings import *
+from .Utils import *
 import os
 import copy
 import zipfile
 from os.path import join, isfile, isdir
-
-
-IMG_INDEX_DICT = dict()
-PATHS = dict()
 
 
 def initialize_indexer(
@@ -21,7 +17,7 @@ def initialize_indexer(
         IMG_INDEX_DICT[path_to_img_index_file][K_INDEX_PATH] = \
             path_to_img_index_file \
             if fixed_index_path is None \
-            else join(fixed_index_path, f"{replace_windows_characters(directory)}{IMG_INDEX}")
+            else join(fixed_index_path, f"{escape_windows_characters(directory)}{IMG_INDEX}")
         process_directory(directory, path_to_img_index_file, non_recursive_directory_search)
 
 
@@ -31,6 +27,7 @@ def process_zip(
         path_to_img_index_file: str
 ):
     with zipfile.ZipFile(zip_file_path, mode="r") as archive:
+        print(f"     Process zip [{zip_file_path}]")
         proper_files_dict = dict()
         for filename in archive.namelist():
             extension = filename.split(".")[-1]
@@ -62,6 +59,8 @@ def process_directory(
         elif isfile(path):
             if extension == "zip":
                 zip_file_list.append((file_dir_name, path))
+            if extension == IMG_INDEX_EXTENSION:
+                print(f"INDEX FILE {path}")
             if extension in PROPER_IMAGE_FILE_EXTENSIONS:
                 proper_files_dict[file_dir_name] = None
 
@@ -107,21 +106,6 @@ def add_directory_to_img_index(
 
 def print_warn(msg: str):
     print(f"\n----\nWARN {msg}\n----\n")
-
-
-def replace_windows_characters(string: str):
-    return string \
-        .replace(" ", "-") \
-        .replace("\\", "-") \
-        .replace("/", "-") \
-        .replace(":", "") \
-        .replace("*", "") \
-        .replace("?", "") \
-        .replace('"', "") \
-        .replace("'", "") \
-        .replace("<", "") \
-        .replace(">", "") \
-        .replace("|", "")
 
 
 def pretty_print():

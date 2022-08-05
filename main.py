@@ -1,7 +1,6 @@
 import argparse
-import cv2
 import os
-from Indexer import *
+from Indexer import create_indexes, initialize_indexer, process_indexes
 
 
 if __name__ == '__main__':
@@ -45,9 +44,8 @@ if __name__ == '__main__':
         type=str
     )
     parsed_args = arg_parser.parse_args()
-    # print(parsed_args)
     initialize_indexer(parsed_args.directory, parsed_args.non_recursive, parsed_args.index_directory)
     if parsed_args.create_index:
         create_indexes(parsed_args.show_images, parsed_args.write_indexes)
     if parsed_args.process_indexes:
-        pass
+        process_indexes()
